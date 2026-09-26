@@ -36,7 +36,7 @@ flowchart LR
 
 ```bash
 git clone https://github.com/soniajat/docker-playground.git
-cd docker-playground/Hands-on/Project-01/
+cd docker-playground/Hands-on/Project-01-Haproxy-Load-Balancer
 docker compose up --build
 ```
 
