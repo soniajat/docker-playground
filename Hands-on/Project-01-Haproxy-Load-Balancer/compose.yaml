@@ -1,0 +1,43 @@
+services:
+  # Entry point — the only service exposed to the host
+  haproxy:
+    image: haproxy:2.9-alpine
+    ports:
+      - "8080:80"   # host:container — hit http://localhost:8080
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      # Controls startup order only — NOT readiness. HAProxy's own
+      # health checks (in haproxy.cfg) handle actual readiness.
+      - web1
+      - web2
+      - web3
+    networks:
+      - lb-net
+
+  # Three identical backend nodes, distinguished only by NODE_NAME.
+  # Build context is ./web — Dockerfile and app.py both live there.
+  web1:
+    build: ./web
+    environment:
+      - NODE_NAME=web1
+    networks:
+      - lb-net
+
+  web2:
+    build: ./web
+    environment:
+      - NODE_NAME=web2
+    networks:
+      - lb-net
+
+  web3:
+    build: ./web
+    environment:
+      - NODE_NAME=web3
+    networks:
+      - lb-net
+
+networks:
+  lb-net:
+    driver: bridge
